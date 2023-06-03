@@ -1,38 +1,40 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "binary_trees.h"
 
 /**
- * binary_tree_insert_right - inserts a node as the
- *					right-child of another node
- *
- * @parent: is a pointer to the node to insert the right-child in
- * @value: is the value to store in the new node
- *
- * Description: If parent already has a right-child, the new node
- *				must take its place, and the old right-child must
- *				be set as the right-child of the new node.
- *
- * Return: a pointer to the created node, or
- *			NULL on failure or
- *			if parent is NULL
+ * leaf_counter - Counts the number of leaves in a binary tree.
+ * @tree: The binary tree.
+ * @n: A pointer to the tree's leaf count value.
  */
-
-binary_tree_t *binary_tree_insert_right(binary_tree_t *parent, int value)
+void leaf_counter(const binary_tree_t *tree, size_t *n)
 {
-	binary_tree_t *new;
+	if (tree != NULL)
+	{
+		if ((tree->left == NULL) && (tree->right == NULL))
+		{
+			if (n != NULL)
+				(*n)++;
+		}
+		else
+		{
+			leaf_counter(tree->left, n);
+			leaf_counter(tree->right, n);
+		}
+	}
+}
 
-	if (!parent)
-		return (NULL);
+/**
+ * binary_tree_leaves - tree leaves
+ * @tree: pointer to the root node of the tree to count the
+ * number of leaves
+ * Description: counts the leaves in a binary tree
+ * Return: 0 if tree is NULL and NULL pointer is not a leaf
+ */
+size_t binary_tree_leaves(const binary_tree_t *tree)
+{
+	size_t n = 0;
 
-	new = malloc(sizeof(binary_tree_t));
-	if (!new)
-		return (NULL);
-
-	new->n = value;
-	new->parent = parent;
-	new->left = NULL;
-	new->right = parent->right;
-	parent->right = new;
-	if (new->right)
-		new->right->parent = new;
-	return (new);
+	leaf_counter(tree, &n);
+	return (n);
 }
